@@ -1,3 +1,4 @@
+# Uses Yelp v2 API, going to update to Yelp Fusion API
 # 1) Have user enter comma separate list 
 # 2) For each item in list, run request function
 # 3) Pull relevant information into a dict, with each index pertaining to a restaurant
@@ -38,32 +39,33 @@ def make_request(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET, input_list)
     session.close()
     return results_list, locations_list[0:]
 
-input_list = []
+def run_yelp_v2():
+    input_list = []
 
-with open('restaurants.txt') as f:
-    for line in f:
-        input_list.append(line)
+    with open('restaurants.txt') as f:
+        for line in f:
+            input_list.append(line)
 
-input_list = sorted(input_list, key=str.lower)
-results_list = {}
-output = open('results_from_api.json', 'w')
+    input_list = sorted(input_list, key=str.lower)
+    results_list = {}
+    output = open('results_from_api.json', 'w')
 
-API_HOST = "http://api.yelp.com/v2/search"
+    API_HOST = "http://api.yelp.com/v2/search"
 
-# Imports credentials from yelp_keys.txt
-api_keys = {}
-with open('yelp_keys.txt', 'r') as f:
-    for line in f:
-        line_split = line.split()
-        api_keys[line_split[0]] = str(line_split[1])
+    # Imports credentials from yelp_keys.txt
+    api_keys = {}
+    with open('yelp_keys.txt', 'r') as f:
+        for line in f:
+            line_split = line.split()
+            api_keys[line_split[0]] = str(line_split[1])
 
-CONSUMER_KEY = api_keys['CONSUMER_KEY']
-CONSUMER_SECRET = api_keys['CONSUMER_SECRET']
-TOKEN = api_keys['TOKEN']
-TOKEN_SECRET = api_keys['TOKEN_SECRET']
+    CONSUMER_KEY = api_keys['CONSUMER_KEY']
+    CONSUMER_SECRET = api_keys['CONSUMER_SECRET']
+    TOKEN = api_keys['TOKEN']
+    TOKEN_SECRET = api_keys['TOKEN_SECRET']
 
-results_list, locations_list = make_request(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET, input_list)
-json.dump(results_list, output)
+    results_list, locations_list = make_request(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET, input_list)
+    json.dump(results_list, output)
 
-with open('locations_to_map.csv', 'w') as out_file:
-    out_file.write('\n'.join(locations_list))
+    with open('locations_to_map.csv', 'w') as out_file:
+        out_file.write('\n'.join(locations_list))
