@@ -2,7 +2,6 @@
 Using Yelp Fusion API
 '''
 
-import os.path
 import json
 import requests
 from rauth import OAuth2Service
@@ -12,8 +11,18 @@ Workflow:
 - access_token.txt contains token
 - if token from file not valid, retrieve a token
 - make request
-'''
 
+- OAuth2 version WIP
+example from https://github.com/litl/rauth/blob/master/docs/index.rst
+yelp = OAuth2Service(
+    client_id = credentials['client_id'],
+    client_secret = credentials['client_secret'],
+    name = 'yelp',
+    base_url = 'https://api.yelp.com/v3/',
+    authorize_url = 'https://api.yelp.com/v3/',
+    access_token_url = 'https://api.yelp.com/oauth2/token'
+)
+'''
 # Opens file and populates credentials dict
 def get_credentials():
     api_keys = {}
@@ -42,22 +51,22 @@ def get_credentials():
 def refresh_token(credentials):
     token_url = 'https://api.yelp.com/oauth2/token'
     r = requests.post(token_url, params={'client_id': credentials['client_id'], 'client_secret': credentials['client_secret']})
-    # print(r.json())
     token = r.json()
     f = open('access_token.txt', 'w')
     f.write(token['access_token'])
     return token['access_token']
 
 
-'''
-example from https://github.com/litl/rauth/blob/master/docs/index.rst
-yelp = OAuth2Service(
-    client_id = credentials['client_id'],
-    client_secret = credentials['client_secret'],
-    name = 'yelp',
-    authorize_url = 'https://api.yelp.com/v3/',
-    access_token_url = 'https://api.yelp.com/oauth2/token'
-)
-'''
+# Takes business id and token, gets json of single business
+def get_business(business_id, token):
+    business_url = 'https://api.yelp.com/v3/businesses/'+business_id
+    headers = {
+        'Authorization': 'Bearer %s' % token
+    }
+    r = requests.get(business_url, headers=headers)
+    return r.json()
 
-print(get_credentials())
+
+credentials = get_credentials()
+token = credentials['access_token']
+print(get_business('gary-danko-san-francisco', token))
