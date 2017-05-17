@@ -56,9 +56,17 @@ def refresh_token(credentials):
     f.write(token['access_token'])
     return token['access_token']
 
+# Searches business by id
+def search_business(business_name):
+    search_url = 'https://api.yelp.com/v3/businesses/search?location=nyc&term='+business_name
+    headers = {
+        'Authorization': 'Bearer %s' % token
+    }
+    r = requests.get(search_url, headers=headers)
+    return r.json()
 
 # Takes business id and token, gets json of single business
-def get_business(business_id, token):
+def get_business_by_id(business_id):
     business_url = 'https://api.yelp.com/v3/businesses/'+business_id
     headers = {
         'Authorization': 'Bearer %s' % token
@@ -69,4 +77,5 @@ def get_business(business_id, token):
 
 credentials = get_credentials()
 token = credentials['access_token']
-print(get_business('gary-danko-san-francisco', token))
+# print(get_business('gary-danko-san-francisco'))
+print(search_business('art bar'))
