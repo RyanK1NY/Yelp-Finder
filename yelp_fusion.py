@@ -82,4 +82,8 @@ def search_business(business_name):
 restaurant_file = "restaurants.txt"
 credentials = get_credentials()
 token = credentials['access_token']
-restaurant_list = get_businesses(restaurant_file)
+# restaurant_list = get_businesses(restaurant_file)
+output_file = open('output_test.json', 'w')
+business_info = search_business('art bar')
+json.dump(business_info, output_file)
+print("Done")
