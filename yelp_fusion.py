@@ -56,6 +56,20 @@ def refresh_token(credentials):
     f.write(token['access_token'])
     return token['access_token']
 
+# Get list of businesses from text file, separated by line, put into list and return
+def get_businesses(business_list): 
+    try:
+        business_file = open(business_list, 'r')
+    except IOError:
+        print("File "+business_list+" not found")
+    else:
+        restaurant_names = []
+        with business_file as f:
+            for line in f:
+                restaurant_names.append(line)
+        return restaurant_names
+
+
 # Searches business by id
 def search_business(business_name):
     search_url = 'https://api.yelp.com/v3/businesses/search?location=nyc&term='+business_name
@@ -65,17 +79,7 @@ def search_business(business_name):
     r = requests.get(search_url, headers=headers)
     return r.json()
 
-# Takes business id and token, gets json of single business
-def get_business_by_id(business_id):
-    business_url = 'https://api.yelp.com/v3/businesses/'+business_id
-    headers = {
-        'Authorization': 'Bearer %s' % token
-    }
-    r = requests.get(business_url, headers=headers)
-    return r.json()
-
-
+restaurant_file = "restaurants.txt"
 credentials = get_credentials()
 token = credentials['access_token']
-# print(get_business('gary-danko-san-francisco'))
-print(search_business('art bar'))
+restaurant_list = get_businesses(restaurant_file)
