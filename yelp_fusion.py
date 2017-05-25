@@ -60,13 +60,12 @@ def refresh_token(credentials):
     return token['access_token']
 
 '''
-def update_dict(dict_input, item):
-    assert type(dict_input) is dict
-    try:
-        if item not in dict_input:
-            dict_input[item]
+Updates global categories dict with aliases, titles, and business ids.
+- aliases is list of the category aliases as per Yelp docs
+- title is official name for display
+- id is business id for businesses that belong to category, businesses can be in multiple categories.
+returns categories dict
 '''
-
 def update_categories(dict_input):
     assert type(dict_input) is dict
     assert 'aliases' in dict_input
@@ -89,7 +88,7 @@ def update_categories(dict_input):
 
 
 # Get list of businesses from text file, separated by line, put into list and return
-def get_businesses(business_list): 
+def get_businesses_from_file(business_list): 
     try:
         business_file = open(business_list, 'r')
     except IOError:
@@ -102,6 +101,7 @@ def get_businesses(business_list):
         return restaurant_names
 
 # Takes a list of business names, adds them to business_list(To do) and sends info on category to update_categories to update that dict
+# todo: account for no results being found
 def get_business_info(business_names):
     assert type(business_names) is list
     business_info = {}
@@ -143,17 +143,16 @@ def search_business(business_name):
     r = requests.get(search_url, headers=headers)
     return r.json()
 
-
-
 restaurant_file = "restaurants.txt"
 credentials = get_credentials()
 token = credentials['access_token']
 
 categories = {}
-
-business_info = get_business_info(['hotel chantel'])
+'''
+businesses = get_businesses_from_file(restaurant_file)
+business_info = get_business_info(businesses)
 business_file = open('output_test.json', 'w')
-json.dump(business_info, business_file)
+json.dump(businesses, business_info)
 business_file.close()
 
 categories_file = open('categories_output.json', 'w')
@@ -162,3 +161,6 @@ categories_file.close()
 
 print(categories)
 print("Done")
+'''
+print(search_business("swelt generation"))
+print(search_business("hotel chantel"))
